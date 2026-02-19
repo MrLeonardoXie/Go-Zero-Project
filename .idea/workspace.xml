@@ -4,11 +4,37 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e851bc22-9f42-4c83-a53d-d4096426bd55" name="Changes" comment="" />
+    <list default="true" id="e851bc22-9f42-4c83-a53d-d4096426bd55" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/application/applet/internal/types/const.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/util/util.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/applet.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/applet.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/etc/applet-api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/etc/applet-api.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/handler/loginhandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/handler/loginhandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/handler/registerhandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/handler/registerhandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/handler/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/handler/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/handler/userinfohandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/handler/userinfohandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/handler/verificationhandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/handler/verificationhandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/logic/loginlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/logic/loginlogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/logic/registerlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/logic/registerlogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/logic/userinfologic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/logic/userinfologic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/logic/verificationlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/logic/verificationlogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/applet/internal/svc/servicecontext.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/svc/servicecontext.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
   </component>
   <component name="GOROOT" url="file:///opt/homebrew/opt/go/libexec" />
   <component name="Git.Settings">
@@ -16,6 +42,12 @@
   </component>
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="true" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/application/applet/internal/logic/userinfologic.go" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -27,11 +59,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
     "RunOnceActivity.GoLinterPluginStorageMigration": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
@@ -43,6 +77,7 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "configurable.group.editor",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
@@ -71,8 +106,5 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VgoProject">
-    <integration-enabled>false</integration-enabled>
   </component>
 </project>

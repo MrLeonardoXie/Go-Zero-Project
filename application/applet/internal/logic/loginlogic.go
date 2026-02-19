@@ -6,8 +6,8 @@ package logic
 import (
 	"context"
 
-	"applet/internal/svc"
-	"applet/internal/types"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

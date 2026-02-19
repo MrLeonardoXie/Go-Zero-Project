@@ -6,7 +6,7 @@ package handler
 import (
 	"net/http"
 
-	"applet/internal/svc"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

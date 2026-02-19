@@ -7,9 +7,9 @@ import (
 	"flag"
 	"fmt"
 
-	"applet/internal/config"
-	"applet/internal/handler"
-	"applet/internal/svc"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/config"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/handler"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

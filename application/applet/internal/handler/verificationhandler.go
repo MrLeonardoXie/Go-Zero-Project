@@ -6,9 +6,9 @@ package handler
 import (
 	"net/http"
 
-	"applet/internal/logic"
-	"applet/internal/svc"
-	"applet/internal/types"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/logic"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

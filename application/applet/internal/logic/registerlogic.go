@@ -1,15 +1,17 @@
 // Code scaffolded by goctl. Safe to edit.
 // goctl 1.9.2
-
 package logic
 
 import (
 	"context"
 
-	"applet/internal/svc"
-	"applet/internal/types"
-
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
+)
+
+const (
+	prefixActivation = "biz#activation#%s"
 )
 
 type RegisterLogic struct {
@@ -28,6 +30,9 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
 	// todo: add your logic here and delete this line
-
 	return
+}
+
+func (l *RegisterLogic) CheckVerificationCode(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
+	getActivation
 }
