@@ -4,6 +4,7 @@ package logic
 
 import (
 	"context"
+	"errors"
 
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
@@ -30,9 +31,20 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
 	// todo: add your logic here and delete this line
-	return
+
 }
 
-func (l *RegisterLogic) CheckVerificationCode(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
-	getActivation
+func (l *RegisterLogic) CheckVerificationCode(req *types.RegisterRequest, code string) error {
+	cachecode, err := getActivationCache(req.Mobile, l.svcCtx.BizRedis)
+	if err != nil {
+		logx.Errorf("getActivationCache mobile %s err:%v", req.Mobile, err)
+	}
+	if cachecode == "" {
+		return errors.New("previous verification code is expired")
+	}
+	if code != cachecode {
+		return errors.New("previous verification code not match")
+	}
+
+	return nil
 }

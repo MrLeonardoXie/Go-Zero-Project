@@ -48,7 +48,7 @@ func (l *VerificationLogic) Verification(req *types.VerificationRequest) (resp *
 		return nil, err
 	}
 	//若获取时间在上一次的30min以内，则使用相同的code
-	code, err := l.getActivationCache(req.Mobile, l.svcCtx.BizRedis)
+	code, err := getActivationCache(req.Mobile, l.svcCtx.BizRedis)
 	if err != nil {
 		logx.Errorf("getActivationCache err:%v", err)
 	}
@@ -63,7 +63,7 @@ func (l *VerificationLogic) Verification(req *types.VerificationRequest) (resp *
 		logx.Errorf("send mobile %s sms err:%v", req.Mobile, err)
 	}
 	// save to cache
-	err = l.setActivationCache(req.Mobile, code, l.svcCtx.BizRedis)
+	err = setActivationCache(req.Mobile, code, l.svcCtx.BizRedis)
 	if err != nil {
 		logx.Errorf("setActivationCache mobile %s err:%v", req.Mobile, err)
 	}
@@ -99,17 +99,17 @@ func (l *VerificationLogic) incrVerificationCount(mobile string) error {
 	return l.svcCtx.BizRedis.Expireat(key, util.EndofDay(time.Now()).Unix())
 }
 
-func (l *VerificationLogic) getActivationCache(mobile string, rds *redis.Redis) (string, error) {
+func getActivationCache(mobile string, rds *redis.Redis) (string, error) {
 	key := fmt.Sprintf(prefixVerificationCount, mobile)
 	return rds.Get(key) //没有code，就返回""
 }
 
-func (l *VerificationLogic) setActivationCache(mobile string, code string, rds *redis.Redis) error {
+func setActivationCache(mobile string, code string, rds *redis.Redis) error {
 	key := fmt.Sprintf(prefixVerificationCount, mobile)
 	return rds.Setex(key, code, expireActivation)
 }
 
-func (l *VerificationLogic) delActivationCache(mobile string, rds *redis.Redis) error {
+func delActivationCache(mobile string, rds *redis.Redis) error {
 	key := fmt.Sprintf(prefixVerificationCount, mobile)
 	_, err := rds.Del(key)
 	return err
