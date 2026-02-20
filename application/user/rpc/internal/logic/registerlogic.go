@@ -5,7 +5,7 @@ import (
 
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/svc"
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/service"
-
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/code"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,10 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *service.RegisterRequest) (*service.RegisterResponse, error) {
-	// todo: add your logic here and delete this line
-
+	// todo: add your logic here and delete this line - finished
+	if len(in.Username) == 0 {
+		return nil, code.RegisterEmptyName
+	}
+	
 	return &service.RegisterResponse{}, nil
 }
