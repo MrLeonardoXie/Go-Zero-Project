@@ -78,7 +78,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	//6.register
 	regRet, err := l.svcCtx.UserRPC.Register(l.ctx, &user.RegisterRequest{
 		Username: req.Name,
-		Mobile:   req.Mobile,
+		Mobile:   mobile,
 		Password: req.Password,
 	})
 	//7.build tokens using userid, which will be used in log in

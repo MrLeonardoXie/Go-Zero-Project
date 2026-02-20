@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"time"
 
+	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/model"
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/svc"
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/service"
 	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/code"
@@ -28,6 +30,22 @@ func (l *RegisterLogic) Register(in *service.RegisterRequest) (*service.Register
 	if len(in.Username) == 0 {
 		return nil, code.RegisterEmptyName
 	}
-	
-	return &service.RegisterResponse{}, nil
+	ret, err := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
+		Username:   in.Username,
+		Mobile:     in.Mobile,
+		Avatar:     in.Avatar,
+		CreateTime: time.Now(),
+		UpdateTime: time.Now(),
+	})
+	if err != nil {
+		logx.Errorf("insert user error, %v", err)
+	}
+	userid, err := ret.LastInsertId()
+	if err != nil {
+		logx.Errorf("get userid err: %v", err)
+	}
+
+	return &service.RegisterResponse{
+		UserId: userid,
+	}, nil
 }
