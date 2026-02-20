@@ -81,16 +81,16 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		Mobile:   mobile,
 		Password: req.Password,
 	})
-	//7.build tokens using userid, which will be used in log in
+	//7.build tokens using userId, which will be used in log in
 	token, err := jwt.BuildTokens(jwt.TokenOptions{
 		AccessSecret: l.svcCtx.Config.Auth.AccessSecret,
 		AccessExpire: l.svcCtx.Config.Auth.AccessExpire,
 		Fields: map[string]interface{}{
-			"userid": regRet.UserId,
+			"userId": regRet.UserId,
 		},
 	})
 	//8.delete verification codecache
-	err = delActivationCache(req.Mobile, l.svcCtx.BizRedis)
+	err = delActivationCache(req.Mobile, req.VerificationCode, l.svcCtx.BizRedis)
 	if err != nil {
 		logx.Errorf("delActivationCache %s, error: %v", req.Mobile, err)
 	}

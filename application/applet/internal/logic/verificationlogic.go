@@ -63,7 +63,7 @@ func (l *VerificationLogic) Verification(req *types.VerificationRequest) (resp *
 		logx.Errorf("send mobile %s sms err:%v", req.Mobile, err)
 	}
 	// save to cache
-	err = setActivationCache(req.Mobile, code, l.svcCtx.BizRedis)
+	err = saveActivationCache(req.Mobile, code, l.svcCtx.BizRedis)
 	if err != nil {
 		logx.Errorf("setActivationCache mobile %s err:%v", req.Mobile, err)
 	}
@@ -100,17 +100,17 @@ func (l *VerificationLogic) incrVerificationCount(mobile string) error {
 }
 
 func getActivationCache(mobile string, rds *redis.Redis) (string, error) {
-	key := fmt.Sprintf(prefixVerificationCount, mobile)
+	key := fmt.Sprintf(prefixActivation, mobile)
 	return rds.Get(key) //没有code，就返回""
 }
 
-func setActivationCache(mobile string, code string, rds *redis.Redis) error {
-	key := fmt.Sprintf(prefixVerificationCount, mobile)
+func saveActivationCache(mobile string, code string, rds *redis.Redis) error {
+	key := fmt.Sprintf(prefixActivation, mobile)
 	return rds.Setex(key, code, expireActivation)
 }
 
-func delActivationCache(mobile string, rds *redis.Redis) error {
-	key := fmt.Sprintf(prefixVerificationCount, mobile)
+func delActivationCache(mobile, code string, rds *redis.Redis) error {
+	key := fmt.Sprintf(prefixActivation, mobile)
 	_, err := rds.Del(key)
 	return err
 }
