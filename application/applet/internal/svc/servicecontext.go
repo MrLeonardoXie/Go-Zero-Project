@@ -1,11 +1,10 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.9.2
-
 package svc
 
 import (
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/config"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/user"
+	"leonardo/application/applet/internal/config"
+	"leonardo/application/user/rpc/user"
+	"leonardo/pkg/interceptors"
+
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -17,7 +16,8 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	userRPC := zrpc.MustNewClient(c.UserRPC)
+	// 自定义拦截器
+	userRPC := zrpc.MustNewClient(c.UserRPC, zrpc.WithUnaryClientInterceptor(interceptors.ClientErrorInterceptor()))
 
 	return &ServiceContext{
 		Config:   c,

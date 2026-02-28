@@ -1,7 +1,9 @@
 package code
 
-import "github.com/MrLeonardoXie/Go-Zero-Project/pkg/xcode"
+import (
+	"leonardo/pkg/xcode"
+)
 
 var (
-	RegisterEmptyName = xcode.New(20001, "RegisterEmptyName")
+	RegisterNameEmpty = xcode.New(20001, "注册名字不能为空") // 注册名字为空
 )

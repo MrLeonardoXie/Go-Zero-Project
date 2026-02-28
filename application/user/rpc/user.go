@@ -4,13 +4,15 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/config"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/server"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/svc"
-	userservice "github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/service"
+	"leonardo/application/user/rpc/internal/config"
+	"leonardo/application/user/rpc/internal/server"
+	"leonardo/application/user/rpc/internal/svc"
+	"leonardo/application/user/rpc/service"
+	"leonardo/pkg/consul"
+	"leonardo/pkg/interceptors"
 
 	"github.com/zeromicro/go-zero/core/conf"
-	coreservice "github.com/zeromicro/go-zero/core/service"
+	cs "github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -26,13 +28,22 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		userservice.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
+		service.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
 
-		if c.Mode == coreservice.DevMode || c.Mode == coreservice.TestMode {
+		if c.Mode == cs.DevMode || c.Mode == cs.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
+	// 自定义拦截器
+	s.AddUnaryInterceptors(interceptors.ServerErrorInterceptor())
+
 	defer s.Stop()
+
+	// 服务注册
+	err := consul.Register(c.Consul, fmt.Sprintf("%s:%d", c.ServiceConf.Prometheus.Host, c.ServiceConf.Prometheus.Port))
+	if err != nil {
+		fmt.Printf("register consul error: %v\n", err)
+	}
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

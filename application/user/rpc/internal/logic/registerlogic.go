@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/model"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/svc"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/service"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/code"
+	"leonardo/application/user/rpc/internal/code"
+	"leonardo/application/user/rpc/internal/model"
+	"leonardo/application/user/rpc/internal/svc"
+	"leonardo/application/user/rpc/service"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,10 +27,11 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *service.RegisterRequest) (*service.RegisterResponse, error) {
-	// todo: add your logic here and delete this line - finished
+	// 当注册名字为空的时候，返回业务自定义错误码
 	if len(in.Username) == 0 {
-		return nil, code.RegisterEmptyName
+		return nil, code.RegisterNameEmpty
 	}
+
 	ret, err := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
 		Username:   in.Username,
 		Mobile:     in.Mobile,
@@ -38,14 +40,14 @@ func (l *RegisterLogic) Register(in *service.RegisterRequest) (*service.Register
 		UpdateTime: time.Now(),
 	})
 	if err != nil {
-		logx.Errorf("insert user error, %v", err)
+		logx.Errorf("Register req: %v error: %v", in, err)
+		return nil, err
 	}
-	userid, err := ret.LastInsertId()
+	userId, err := ret.LastInsertId()
 	if err != nil {
-		logx.Errorf("get userid err: %v", err)
+		logx.Errorf("LastInsertId error: %v", err)
+		return nil, err
 	}
 
-	return &service.RegisterResponse{
-		UserId: userid,
-	}, nil
+	return &service.RegisterResponse{UserId: userId}, nil
 }

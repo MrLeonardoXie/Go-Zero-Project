@@ -18,7 +18,8 @@ type (
 	VerificationRequest {
 		Mobile string `json:"mobile"`
 	}
-	VerificationResponse  {}
+	VerificationResponse {
+	}
 	LoginRequest {
 		Mobile           string `json:"mobile"`
 		VerificationCode string `json:"verification_code"`
@@ -40,21 +41,18 @@ type (
 service applet-api {
 	@handler RegisterHandler
 	post /register (RegisterRequest) returns (RegisterResponse)
-
 	@handler VerificationHandler
 	post /verification (VerificationRequest) returns (VerificationResponse)
-
 	@handler LoginHandler
 	post /login (LoginRequest) returns (LoginResponse)
 }
 
 @server (
-	prefix:    /v1/user
+	prefix: /v1/user
 	signature: true
-	jwt:       Auth
+	jwt: Auth
 )
 service applet-api {
 	@handler UserInfoHandler
 	get /info returns (UserInfoResponse)
 }
-

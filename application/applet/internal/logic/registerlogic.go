@@ -1,5 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.9.2
 package logic
 
 import (
@@ -7,12 +5,15 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/user"
-	"github.com/MrLeonardoXie/Go-Zero-Project/pkg/encrypt"
-	"github.com/MrLeonardoXie/Go-Zero-Project/pkg/jwt"
+	"leonardo/application/applet/internal/code"
+	"leonardo/application/applet/internal/svc"
+	"leonardo/application/applet/internal/types"
+	"leonardo/application/user/rpc/user"
+	"leonardo/pkg/encrypt"
+	"leonardo/pkg/jwt"
+
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 const (
@@ -33,55 +34,50 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 	}
 }
 
-func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
-	// todo: add your logic here and delete this line
-	//1.trimspace and detect empty
+func (l *RegisterLogic) Register(req *types.RegisterRequest) (*types.RegisterResponse, error) {
 	req.Name = strings.TrimSpace(req.Name)
-	if len(req.Name) == 0 {
-		return nil, errors.New("name cannot be empty")
-	}
 	req.Mobile = strings.TrimSpace(req.Mobile)
 	if len(req.Mobile) == 0 {
-		return nil, errors.New("mobile cannot be empty")
+		return nil, code.RegisterMobileEmpty
 	}
 	req.Password = strings.TrimSpace(req.Password)
 	if len(req.Password) == 0 {
-		return nil, errors.New("password cannot be empty")
+		return nil, code.RegisterPasswdEmpty
+	} else {
+		req.Password = encrypt.EncPassword(req.Password)
 	}
 	req.VerificationCode = strings.TrimSpace(req.VerificationCode)
 	if len(req.VerificationCode) == 0 {
-		return nil, errors.New("verification code cannot be empty")
+		return nil, code.VerificationCodeEmpty
 	}
-
-	//2.check verification code
-	err = l.CheckVerificationCode(req, req.VerificationCode)
+	err := checkVerificationCode(l.svcCtx.BizRedis, req.Mobile, req.VerificationCode)
 	if err != nil {
+		logx.Errorf("checkVerificationCode error: %v", err)
 		return nil, err
 	}
-
-	//3.encrypy the mobile
 	mobile, err := encrypt.EncMobile(req.Mobile)
 	if err != nil {
-		logx.Error("Encrypt mobile %s, error: %v", req.Mobile, err)
+		logx.Errorf("EncMobile mobile: %s error: %v", req.Mobile, err)
 		return nil, err
 	}
-	//4.Get userinfo in database
-	userinfo, err := l.svcCtx.UserRPC.FindByMobile(l.ctx, &user.FindByMobileRequest{Mobile: mobile}) //未找到返回userinfo.id = 0
+	u, err := l.svcCtx.UserRPC.FindByMobile(l.ctx, &user.FindByMobileRequest{
+		Mobile: mobile,
+	})
 	if err != nil {
-		logx.Error("UserRPC.FindByMobile %s, error: %v", mobile, err)
+		logx.Errorf("FindByMobile error: %v", err)
 		return nil, err
 	}
-	//5.check whether mobile has been used
-	if userinfo != nil && userinfo.UserId != 0 {
-		return nil, errors.New("this mobile is already registered")
+	if u != nil && u.UserId > 0 {
+		return nil, code.MobileHasRegistered
 	}
-	//6.register
 	regRet, err := l.svcCtx.UserRPC.Register(l.ctx, &user.RegisterRequest{
 		Username: req.Name,
 		Mobile:   mobile,
-		Password: req.Password,
 	})
-	//7.build tokens using userId, which will be used in log in
+	if err != nil {
+		logx.Errorf("Register error: %v", err)
+		return nil, err
+	}
 	token, err := jwt.BuildTokens(jwt.TokenOptions{
 		AccessSecret: l.svcCtx.Config.Auth.AccessSecret,
 		AccessExpire: l.svcCtx.Config.Auth.AccessExpire,
@@ -89,12 +85,13 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 			"userId": regRet.UserId,
 		},
 	})
-	//8.delete verification codecache
-	err = delActivationCache(req.Mobile, req.VerificationCode, l.svcCtx.BizRedis)
 	if err != nil {
-		logx.Errorf("delActivationCache %s, error: %v", req.Mobile, err)
+		logx.Errorf("BuildTokens error: %v", err)
+		return nil, err
 	}
-	//9.return
+
+	_ = delActivationCache(req.Mobile, req.VerificationCode, l.svcCtx.BizRedis)
+
 	return &types.RegisterResponse{
 		UserId: regRet.UserId,
 		Token: types.Token{
@@ -104,16 +101,16 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	}, nil
 }
 
-func (l *RegisterLogic) CheckVerificationCode(req *types.RegisterRequest, code string) error {
-	cachecode, err := getActivationCache(req.Mobile, l.svcCtx.BizRedis)
+func checkVerificationCode(rds *redis.Redis, mobile, code string) error {
+	cacheCode, err := getActivationCache(mobile, rds)
 	if err != nil {
-		logx.Errorf("getActivationCache mobile %s err:%v", req.Mobile, err)
+		return err
 	}
-	if cachecode == "" {
-		return errors.New("previous verification code is expired")
+	if cacheCode == "" {
+		return errors.New("verification code expired")
 	}
-	if code != cachecode {
-		return errors.New("previous verification code not match")
+	if cacheCode != code {
+		return errors.New("verification code failed")
 	}
 
 	return nil

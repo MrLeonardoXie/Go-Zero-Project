@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/svc"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/service"
+	"leonardo/application/user/rpc/internal/svc"
+	"leonardo/application/user/rpc/service"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,7 +24,6 @@ func NewSendSmsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendSmsLo
 }
 
 func (l *SendSmsLogic) SendSms(in *service.SendSmsRequest) (*service.SendSmsResponse, error) {
-	// todo: add your logic here and delete this line
-
+	// TODO send sms
 	return &service.SendSmsResponse{}, nil
 }

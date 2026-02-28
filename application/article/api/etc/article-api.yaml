@@ -1,0 +1,37 @@
+Name: article-api
+Host: 0.0.0.0
+Port: 80
+Auth:
+  AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  AccessExpire: 604800
+  RefreshSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  RefreshExpire: 2592000
+  RefreshAfter: 604800
+Oss:
+  Endpoint: oss-cn-shanghai.aliyuncs.com
+  AccessKeyId: xxxxxxxxxxxxxxxxxxxx
+  AccessKeySecret: xxxxxxxxxxxxxxxxxxxx
+  BucketName: leonardo-article
+ArticleRPC:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379 #Etcd的服务地址
+    Key: article.rpc #RPC 服务启动后会把自己的地址（IP:Port）注册到 etcd 的 article.rpc 这个 key 下
+  NonBlock: true
+UserRPC:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+  NonBlock: true
+#Consul:
+#  Host: 127.0.0.1:8500 或 host.docker.internal:8500
+#  Key: article-api
+#  Meta:
+#      env: test
+#      service_group: leonardo
+#      service_name: article-api
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9101
+  Path: /metrics

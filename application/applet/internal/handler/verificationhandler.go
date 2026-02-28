@@ -1,14 +1,11 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.9.2
-
 package handler
 
 import (
 	"net/http"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/logic"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
+	"leonardo/application/applet/internal/logic"
+	"leonardo/application/applet/internal/svc"
+	"leonardo/application/applet/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

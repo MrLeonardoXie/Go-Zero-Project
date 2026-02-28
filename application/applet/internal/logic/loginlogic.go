@@ -1,16 +1,41 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.9.2
-
 package logic
 
 import (
 	"context"
+	"strings"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
+	"leonardo/application/applet/internal/code"
+	"leonardo/application/applet/internal/svc"
+	"leonardo/application/applet/internal/types"
+	"leonardo/application/user/rpc/user"
+	"leonardo/pkg/encrypt"
+	"leonardo/pkg/jwt"
+	"leonardo/pkg/xcode"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
+
+//                            _ooOoo_
+//                           o8888888o
+//                           88" . "88
+//                           (| -_- |)
+//                            O\ = /O
+//                        ____/`---'\____
+//                      .   ' \\| |// `.
+//                       / \\||| : |||// \
+//                     / _||||| -:- |||||- \
+//                       | | \\\ - /// | |
+//                     | \_| ''\---/'' | |
+//                      \ .-\__ `-` ___/-. /
+//                   ___`. .' /--.--\ `. . __
+//                ."" '< `.___\_<|>_/___.' >'"".
+//               | | : `- \`.;`\ _ /`;.`/ - ` : | |
+//                 \ \ `-. \_ __\ /__ _/ .-` / /
+//         ======`-.____`-.___\_____/___.-`____.-'======
+//                            `=---='
+//
+//         .............................................
+//                  佛祖保佑             永无BUG
 
 type LoginLogic struct {
 	logx.Logger
@@ -26,8 +51,53 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, err error) {
-	// todo: add your logic here and delete this line
+func (l *LoginLogic) Login(req *types.LoginRequest) (*types.LoginResponse, error) {
+	req.Mobile = strings.TrimSpace(req.Mobile)
+	if len(req.Mobile) == 0 {
+		return nil, code.LoginMobileEmpty
+	}
+	req.VerificationCode = strings.TrimSpace(req.VerificationCode)
+	if len(req.VerificationCode) == 0 {
+		return nil, code.VerificationCodeEmpty
+	}
 
-	return
+	err := checkVerificationCode(l.svcCtx.BizRedis, req.Mobile, req.VerificationCode)
+	if err != nil {
+		return nil, err
+	}
+
+	mobile, err := encrypt.EncMobile(req.Mobile)
+	if err != nil {
+		logx.Errorf("EncMobile mobile: %s error: %v", req.Mobile, err)
+		return nil, err
+	}
+	u, err := l.svcCtx.UserRPC.FindByMobile(l.ctx, &user.FindByMobileRequest{Mobile: mobile})
+	if err != nil {
+		logx.Errorf("FindByMobile error: %v", err)
+		return nil, err
+	}
+	if u == nil || u.UserId == 0 {
+		return nil, xcode.AccessDenied
+	}
+
+	token, err := jwt.BuildTokens(jwt.TokenOptions{
+		AccessSecret: l.svcCtx.Config.Auth.AccessSecret,
+		AccessExpire: l.svcCtx.Config.Auth.AccessExpire,
+		Fields: map[string]interface{}{
+			"userId": u.UserId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	_ = delActivationCache(req.Mobile, req.VerificationCode, l.svcCtx.BizRedis)
+
+	return &types.LoginResponse{
+		UserId: u.UserId,
+		Token: types.Token{ //token是用于登陆以后，提供操作其他事情的权限
+			AccessToken:  token.AccessToken,
+			AccessExpire: token.AccessExpire,
+		},
+	}, nil
 }

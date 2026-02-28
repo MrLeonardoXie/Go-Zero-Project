@@ -1,18 +1,16 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.9.2
-
 package logic
 
 import (
+	"leonardo/pkg/util"
 	"context"
 	"fmt"
 	"strconv"
 	"time"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/svc"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/applet/internal/types"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/user"
-	"github.com/MrLeonardoXie/Go-Zero-Project/pkg/util"
+	"leonardo/application/applet/internal/svc"
+	"leonardo/application/applet/internal/types"
+	"leonardo/application/user/rpc/user"
+
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 )
@@ -38,39 +36,36 @@ func NewVerificationLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Veri
 }
 
 func (l *VerificationLogic) Verification(req *types.VerificationRequest) (resp *types.VerificationResponse, err error) {
-	// todo: add your logic here and delete this line - finished
 	count, err := l.getVerificationCount(req.Mobile)
 	if err != nil {
-		logx.Errorf("get mobile %s verification count err:%v", req.Mobile, err)
+		logx.Errorf("getVerificationCount mobile: %s error: %v", req.Mobile, err)
 	}
-	//大于当天上限
 	if count > verificationLimitPerDay {
 		return nil, err
 	}
-	//若获取时间在上一次的30min以内，则使用相同的code
+	// 30分钟内验证码不再变化
 	code, err := getActivationCache(req.Mobile, l.svcCtx.BizRedis)
 	if err != nil {
-		logx.Errorf("getActivationCache err:%v", err)
+		logx.Errorf("getActivationCache mobile: %s error: %v", req.Mobile, err)
 	}
 	if len(code) == 0 {
-		code = util.RandomNumeric(6) //random 一个新code
+		code = util.RandomNumeric(6)
 	}
-	// send msg to mobile
 	_, err = l.svcCtx.UserRPC.SendSms(l.ctx, &user.SendSmsRequest{
 		Mobile: req.Mobile,
 	})
 	if err != nil {
-		logx.Errorf("send mobile %s sms err:%v", req.Mobile, err)
+		logx.Errorf("sendSms mobile: %s error: %v", req.Mobile, err)
+		return nil, err
 	}
-	// save to cache
 	err = saveActivationCache(req.Mobile, code, l.svcCtx.BizRedis)
 	if err != nil {
-		logx.Errorf("setActivationCache mobile %s err:%v", req.Mobile, err)
+		logx.Errorf("saveActivationCache mobile: %s error: %v", req.Mobile, err)
+		return nil, err
 	}
-	// increase count
 	err = l.incrVerificationCount(req.Mobile)
 	if err != nil {
-		logx.Errorf("incrVerificationCount mobile %s err:%v", req.Mobile, err)
+		logx.Errorf("incrVerificationCount mobile: %s error: %v", req.Mobile, err)
 	}
 
 	return &types.VerificationResponse{}, nil
@@ -83,7 +78,7 @@ func (l *VerificationLogic) getVerificationCount(mobile string) (int, error) {
 		return 0, err
 	}
 	if len(val) == 0 {
-		return 0, err
+		return 0, nil
 	}
 
 	return strconv.Atoi(val)
@@ -96,15 +91,15 @@ func (l *VerificationLogic) incrVerificationCount(mobile string) error {
 		return err
 	}
 
-	return l.svcCtx.BizRedis.Expireat(key, util.EndofDay(time.Now()).Unix())
+	return l.svcCtx.BizRedis.Expireat(key, util.EndOfDay(time.Now()).Unix())
 }
 
 func getActivationCache(mobile string, rds *redis.Redis) (string, error) {
 	key := fmt.Sprintf(prefixActivation, mobile)
-	return rds.Get(key) //没有code，就返回""
+	return rds.Get(key)
 }
 
-func saveActivationCache(mobile string, code string, rds *redis.Redis) error {
+func saveActivationCache(mobile, code string, rds *redis.Redis) error {
 	key := fmt.Sprintf(prefixActivation, mobile)
 	return rds.Setex(key, code, expireActivation)
 }

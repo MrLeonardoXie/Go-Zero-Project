@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	passwordEncryptSeed = "(beyond)@#$"
+	passwordEncryptSeed = "(leonardo)@#$"
 	mobileAesKey        = "5A2E746B08D846502F37A6E2D85D583B"
 )
 
@@ -18,7 +18,7 @@ func EncPassword(password string) string {
 	return Md5Sum([]byte(strings.TrimSpace(password + passwordEncryptSeed)))
 }
 
-func EncMobile(mobile string) (string, error) {
+func EncMobile(mobile string) (string, error) { //同一个mobile的加密结果是相同的
 	data, err := codec.EcbEncrypt([]byte(mobileAesKey), []byte(mobile))
 	if err != nil {
 		return "", err

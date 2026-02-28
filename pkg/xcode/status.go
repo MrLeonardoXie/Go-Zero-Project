@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/MrLeonardoXie/Go-Zero-Project/pkg/xcode/types"
+	"leonardo/pkg/xcode/types"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/pkg/errors"
@@ -164,11 +164,11 @@ func FromError(err error) *status.Status {
 
 func gRPCStatusFromXCode(code XCode) (*status.Status, error) {
 	var sts *Status
-	switch v := code.(type) {
+	switch v := code.(type) { //v为Code类型
 	case *Status:
 		sts = v
 	case Code:
-		sts = FromCode(v)
+		sts = FromCode(v) // sts = &types.Status{Code: int32(code.Code()), Message: code.Message()}
 	default:
 		sts = Error(Code{code.Code(), code.Message()})
 		for _, detail := range code.Details() {
@@ -178,8 +178,8 @@ func gRPCStatusFromXCode(code XCode) (*status.Status, error) {
 		}
 	}
 
-	stas := status.New(codes.Unknown, strconv.Itoa(sts.Code()))
-	return stas.WithDetails(sts.Proto())
+	stas := status.New(codes.Unknown, strconv.Itoa(sts.Code())) //使用 status.New 将你的业务码封装进 Details
+	return stas.WithDetails(sts.Proto())                        // {Code: 10001, Message: "注册名字不能为空}
 }
 
 func GrpcStatusToXCode(gstatus *status.Status) XCode {

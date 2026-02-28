@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/config"
-	"github.com/MrLeonardoXie/Go-Zero-Project/application/user/rpc/internal/model"
+	"leonardo/application/user/rpc/internal/config"
+	"leonardo/application/user/rpc/internal/model"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
