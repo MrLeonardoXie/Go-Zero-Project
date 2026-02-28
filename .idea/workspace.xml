@@ -5,39 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f893310-55ce-400e-84db-1b22297247ff" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/application/applet/internal/logic/loginlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/logic/loginlogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/internal/logic/userinfologic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/logic/userinfologic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/article.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/etc/article-api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/etc/article-api.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/internal/svc/servicecontext.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/internal/svc/servicecontext.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/mq/etc/article.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/etc/article.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/mq/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/mq/internal/logic/articlelikenumlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/internal/logic/articlelikenumlogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/mq/internal/logic/articlelogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/internal/logic/articlelogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/mq/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/logic/articledeletelogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/logic/articledeletelogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/logic/articleslogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/logic/articleslogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/logic/publishlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/logic/publishlogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/model/articlemodel.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/model/articlemodel.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/svc/servicecontext.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/svc/servicecontext.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/follow/rpc/internal/logic/followlistlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/follow/rpc/internal/logic/followlistlogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/follow/rpc/internal/logic/followlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/follow/rpc/internal/logic/followlogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/follow/rpc/internal/model/follow.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/follow/rpc/internal/model/follow.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/mq/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/mq/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/rpc/internal/logic/thumbuplogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/rpc/internal/logic/thumbuplogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/user/rpc/internal/model/usermodel.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/user/rpc/internal/model/usermodel.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/like.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/like.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/consul/consul.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/consul/consul.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/encrypt/encrypt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/encrypt/encrypt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/es/es.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/es/es.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/interceptors/clienterrorinterceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/interceptors/clienterrorinterceptor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/interceptors/servererrorinterceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/interceptors/servererrorinterceptor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/orm/metric.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/orm/metric.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/orm/orm.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/orm/orm.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/orm/plugin.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/orm/plugin.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/xcode/status.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/xcode/status.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,10 +17,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -60,29 +29,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
-    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "go.sdk.automatically.set": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/leonardo/Go/beyond",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "Errors",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginOnboardingV2&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/leonardo/Go/beyond&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
