@@ -6,5 +6,10 @@ KqConsumerConf:
   Group: group-leonardo-like
   Topic: topic-leonardo-like
   Offset: last
-  Consumers: 1
-  Processors: 1
+  Consumers: 1 #可以修改，处理并发
+  Processors: 1 #可以修改，处理并发
+Datasource: root:root1234@tcp(127.0.0.1:3306)/leonardo_like?parseTime=true
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node

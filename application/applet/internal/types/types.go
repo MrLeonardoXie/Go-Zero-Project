@@ -40,3 +40,27 @@ type UserInfoResponse struct {
 	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
 }
+
+type ThumbupRequest struct {
+	BizId    string `json:"biz_id"`
+	ObjId    int64  `json:"obj_id"`
+	LikeType int32  `json:"like_type"`
+}
+
+type ThumbupResponse struct {
+	BizId      string `json:"biz_id"`
+	ObjId      int64  `json:"obj_id"`
+	LikeNum    int64  `json:"like_num"`
+	DislikeNum int64  `json:"dislike_num"`
+}
+
+type IsThumbupRequest struct {
+	BizId    string `json:"biz_id"`
+	TargetId int64  `json:"target_id"`
+}
+
+type IsThumbupResponse struct {
+	IsThumbup   bool  `json:"is_thumbup"`
+	LikeType    int32 `json:"like_type"`
+	ThumbupTime int64 `json:"thumbup_time"`
+}

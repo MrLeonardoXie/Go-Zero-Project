@@ -2,6 +2,7 @@ package svc
 
 import (
 	"leonardo/application/applet/internal/config"
+	"leonardo/application/like/rpc/like"
 	"leonardo/application/user/rpc/user"
 	"leonardo/pkg/interceptors"
 
@@ -12,16 +13,20 @@ import (
 type ServiceContext struct {
 	Config   config.Config
 	UserRPC  user.User
+	LikeRPC  like.Like
 	BizRedis *redis.Redis
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	// 自定义拦截器
+	// 创建面向 User 服务配置的通用 gRPC 客户端实例（带发现/负载均衡/熔断能力），自定义拦截器
 	userRPC := zrpc.MustNewClient(c.UserRPC, zrpc.WithUnaryClientInterceptor(interceptors.ClientErrorInterceptor()))
+	likeRPC := zrpc.MustNewClient(c.LikeRPC, zrpc.WithUnaryClientInterceptor(interceptors.ClientErrorInterceptor()))
 
 	return &ServiceContext{
-		Config:   c,
+		Config: c,
+		//创建user-rpc业务client
 		UserRPC:  user.NewUser(userRPC),
+		LikeRPC:  like.NewLike(likeRPC),
 		BizRedis: redis.New(c.BizRedis.Host, redis.WithPass(c.BizRedis.Pass)),
 	}
 }

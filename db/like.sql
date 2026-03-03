@@ -16,7 +16,7 @@ CREATE TABLE `like_record` (
 
 CREATE TABLE `like_count` (
     `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `biz_id` varchar(64) NOT NULL DEFAULT '' COMMENT '业务ID',
+    `biz_id` varchar(64) NOT NULL DEFAULT '' COMMENT '业务ID', --文章/评论
     `obj_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '点赞内容id', -- 对应的就是文章id/评论id
     `like_num` int(11) NOT NULL DEFAULT '0' COMMENT '点赞数',
     `dislike_num` int(11) NOT NULL DEFAULT '0' COMMENT '点踩数',

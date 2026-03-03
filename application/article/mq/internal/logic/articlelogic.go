@@ -62,10 +62,15 @@ func (l *ArticleLogic) articleOperate(msg *types.CanalArticleMsg) error {
 		publishTimeKey := articlesKey(d.AuthorId, 0)
 		likeNumKey := articlesKey(d.AuthorId, 1)
 
+		//更新Redis，实现“最终一致性”
 		switch status {
 		case types.ArticleStatusVisible: //文章状态为可见
-			b, _ := l.svcCtx.BizRedis.ExistsCtx(l.ctx, publishTimeKey)
+			b, _ := l.svcCtx.BizRedis.ExistsCtx(l.ctx, publishTimeKey) //判断该缓存是否存在，判断的时候使用了熔断操作
 			if b {
+				/* ZddCtx操作逻辑
+				- 如果 d.ID 这个 member 不存在：新增到有序集合
+				- 如果已存在：更新该 member 的 score（这里是 t.Unix()）
+				*/
 				_, err = l.svcCtx.BizRedis.ZaddCtx(l.ctx, publishTimeKey, t.Unix(), d.ID)
 				if err != nil {
 					l.Logger.Errorf("ZaddCtx key: %s req: %v error: %v", publishTimeKey, d, err)

@@ -33,6 +33,26 @@ type (
 		Username string `json:"username"`
 		Avatar   string `json:"avatar"`
 	}
+	ThumbupRequest {
+		BizId    string `json:"biz_id"`
+		ObjId    int64  `json:"obj_id"`
+		LikeType int32  `json:"like_type"`
+	}
+	ThumbupResponse {
+		BizId      string `json:"biz_id"`
+		ObjId      int64  `json:"obj_id"`
+		LikeNum    int64  `json:"like_num"`
+		DislikeNum int64  `json:"dislike_num"`
+	}
+	IsThumbupRequest {
+		BizId    string `json:"biz_id"`
+		TargetId int64  `json:"target_id"`
+	}
+	IsThumbupResponse {
+		IsThumbup   bool  `json:"is_thumbup"`
+		LikeType    int32 `json:"like_type"`
+		ThumbupTime int64 `json:"thumbup_time"`
+	}
 )
 
 @server (
@@ -55,4 +75,8 @@ service applet-api {
 service applet-api {
 	@handler UserInfoHandler
 	get /info returns (UserInfoResponse)
+	@handler ThumbupHandler
+	post /thumbup (ThumbupRequest) returns (ThumbupResponse)
+	@handler IsThumbupHandler
+	post /is-thumbup (IsThumbupRequest) returns (IsThumbupResponse)
 }

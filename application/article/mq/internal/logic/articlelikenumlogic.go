@@ -28,7 +28,7 @@ func NewArticleLikeNumLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ar
 }
 
 func (l *ArticleLikeNumLogic) Consume(_, val string) error {
-	var msg *types.CanalLikeMsg
+	var msg *types.CanalLikeMsg //msg是一个数组，因为LikeMsg可能会包含多条article数据的改变
 	err := json.Unmarshal([]byte(val), &msg)
 	if err != nil {
 		logx.Errorf("Consume val: %s error: %v", val, err)

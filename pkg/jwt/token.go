@@ -22,7 +22,7 @@ type (
 func BuildTokens(opt TokenOptions) (Token, error) {
 	var token Token
 	now := time.Now().Add(-time.Minute).Unix()
-	accessToken, err := genToken(now, opt.AccessSecret, opt.Fields, opt.AccessExpire)
+	accessToken, err := genToken(now, opt.AccessSecret, opt.Fields, opt.AccessExpire) //accessToken中包含claims(exp,iat,fields)
 	if err != nil {
 		return token, err
 	}
@@ -42,5 +42,5 @@ func genToken(iat int64, secretKey string, payloads map[string]interface{}, seco
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims = claims
 
-	return token.SignedString([]byte(secretKey))
+	return token.SignedString([]byte(secretKey)) ////使用SigningMethodHS256,基于对claims做签名
 }

@@ -33,7 +33,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: ArticleListHandler(serverCtx),
 			},
 		},
-		//rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret), //用户需要在登陆的情况下才能调用这些api，请求会先经过 JWT 中间件
 		rest.WithPrefix("/v1/article"),
 	)
 }

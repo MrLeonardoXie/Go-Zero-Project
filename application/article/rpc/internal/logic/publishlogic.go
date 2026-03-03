@@ -44,7 +44,7 @@ func (l *PublishLogic) Publish(in *pb.PublishRequest) (*pb.PublishResponse, erro
 		Content:     in.Content,
 		Description: in.Description,
 		Cover:       in.Cover,
-		Status:      types.ArticleStatusVisible, // 正常逻辑不会这样写，这里为了演示方便
+		Status:      types.ArticleStatusVisible, // 可改进：添加“待审核”状态
 		PublishTime: time.Now(),
 		CreateTime:  time.Now(),
 		UpdateTime:  time.Now(),

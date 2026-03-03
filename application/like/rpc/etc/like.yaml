@@ -9,3 +9,8 @@ KqPusherConf:
   Brokers:
     - 127.0.0.1:9092
   Topic: topic-leonardo-like
+Datasource: root:Zsg123456@tcp(127.0.0.1:3306)/leonardo_like?parseTime=true
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node

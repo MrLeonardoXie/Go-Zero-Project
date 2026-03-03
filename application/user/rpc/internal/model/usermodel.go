@@ -19,7 +19,7 @@ type (
 	}
 
 	customUserModel struct {
-		*defaultUserModel
+		*defaultUserModel //嵌入sqlc的方法，里面有TransactCtx接口定义
 	}
 )
 

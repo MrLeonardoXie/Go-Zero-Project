@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"leonardo/application/like/rpc/internal/model"
 	"leonardo/application/like/rpc/internal/svc"
 	"leonardo/application/like/rpc/service"
 
@@ -24,7 +25,22 @@ func NewIsThumbupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsThumb
 }
 
 func (l *IsThumbupLogic) IsThumbup(in *service.IsThumbupRequest) (*service.IsThumbupResponse, error) {
-	// todo: add your logic here and delete this line
+	record, err := l.svcCtx.LikeRecordModel.FindOneByBizIdObjIdUserId(l.ctx, in.BizId, in.TargetId, in.UserId)
+	if err != nil {
+		if err == model.ErrNotFound {
+			return &service.IsThumbupResponse{UserThumbups: map[int64]*service.UserThumbup{}}, nil
+		}
 
-	return &service.IsThumbupResponse{}, nil
+		return nil, err
+	}
+
+	return &service.IsThumbupResponse{
+		UserThumbups: map[int64]*service.UserThumbup{
+			in.UserId: {
+				UserId:      record.UserId,
+				ThumbupTime: record.CreateTime.Unix(),
+				LikeType:    int32(record.LikeType),
+			},
+		},
+	}, nil
 }

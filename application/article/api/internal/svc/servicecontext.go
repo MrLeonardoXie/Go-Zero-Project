@@ -38,6 +38,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:     c,
 		OssClient:  oc,
 		ArticleRPC: article.NewArticle(zrpc.MustNewClient(c.ArticleRPC)),
-		//UserRPC:    user.NewUser(zrpc.MustNewClient(c.UserRPC)),
+		UserRPC:    user.NewUser(zrpc.MustNewClient(c.UserRPC)),
 	}
 }

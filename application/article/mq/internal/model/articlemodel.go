@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -30,6 +31,6 @@ func NewArticleModel(conn sqlx.SqlConn) ArticleModel {
 
 func (m *customArticleModel) UpdateLikeNum(ctx context.Context, id, likeNum int64) error {
 	query := fmt.Sprintf("update %s set like_num = ? where `id` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, likeNum, id)
+	_, err := m.conn.ExecCtx(ctx, query, likeNum, id) //内部启动了熔断
 	return err
 }

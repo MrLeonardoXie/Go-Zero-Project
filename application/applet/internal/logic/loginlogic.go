@@ -15,28 +15,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-//                            _ooOoo_
-//                           o8888888o
-//                           88" . "88
-//                           (| -_- |)
-//                            O\ = /O
-//                        ____/`---'\____
-//                      .   ' \\| |// `.
-//                       / \\||| : |||// \
-//                     / _||||| -:- |||||- \
-//                       | | \\\ - /// | |
-//                     | \_| ''\---/'' | |
-//                      \ .-\__ `-` ___/-. /
-//                   ___`. .' /--.--\ `. . __
-//                ."" '< `.___\_<|>_/___.' >'"".
-//               | | : `- \`.;`\ _ /`;.`/ - ` : | |
-//                 \ \ `-. \_ __\ /__ _/ .-` / /
-//         ======`-.____`-.___\_____/___.-`____.-'======
-//                            `=---='
-//
-//         .............................................
-//                  佛祖保佑             永无BUG
-
 type LoginLogic struct {
 	logx.Logger
 	ctx    context.Context
@@ -96,7 +74,7 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (*types.LoginResponse, error
 	return &types.LoginResponse{
 		UserId: u.UserId,
 		Token: types.Token{ //token是用于登陆以后，提供操作其他事情的权限
-			AccessToken:  token.AccessToken,
+			AccessToken:  token.AccessToken, //包含claims(iat,exp,fields)
 			AccessExpire: token.AccessExpire,
 		},
 	}, nil

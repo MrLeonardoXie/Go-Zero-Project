@@ -17,7 +17,7 @@ ArticleKqConsumerConf:
   Offset: last
   Consumers: 1
   Processors: 1
-Datasource: root:Zsg123456@tcp(127.0.0.1:3306)/leonardo_article?parseTime=true
+Datasource: root:root1234@tcp(127.0.0.1:3306)/leonardo_article?parseTime=true
 BizRedis:
   Host: 127.0.0.1:6379
   Pass:
