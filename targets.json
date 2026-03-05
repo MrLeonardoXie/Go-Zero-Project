@@ -1,0 +1,29 @@
+[
+  {
+    "targets": ["host.docker.internal:9101"],
+    "labels": {
+      "job": "follow-rpc",
+      "app": "follow",
+      "env": "test",
+      "instance": "host.docker.internal:9101"
+    }
+  },
+  {
+    "targets": ["host.docker.internal:9102"],
+    "labels": {
+      "job": "article-rpc",
+      "app": "article",
+      "env": "test",
+      "instance": "host.docker.internal:9102"
+    }
+  },
+  {
+    "targets": ["host.docker.internal:9104"],
+    "labels": {
+      "job": "article-mq",
+      "app": "article",
+      "env": "test",
+      "instance": "host.docker.internal:9104"
+    }
+  }
+]

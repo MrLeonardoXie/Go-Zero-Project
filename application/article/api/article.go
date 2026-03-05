@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"leonardo/pkg/consul"
 
 	"leonardo/application/article/api/internal/config"
 	"leonardo/application/article/api/internal/handler"
@@ -31,11 +32,11 @@ func main() {
 	// 自定义错误处理方法
 	httpx.SetErrorHandler(xcode.ErrHandler)
 
-	// Consul:服务注册
-	//err := consul.Register(c.Consul, fmt.Sprintf("%s:%d", c.ServiceConf.Prometheus.Host, c.ServiceConf.Prometheus.Port))
-	//if err != nil {
-	//	fmt.Printf("consul register err: %v\n", err)
-	//}
+	//Consul:服务注册
+	err := consul.Register(c.Consul, fmt.Sprintf("%s:%d", c.ServiceConf.Prometheus.Host, c.ServiceConf.Prometheus.Port))
+	if err != nil {
+		fmt.Printf("consul register err: %v\n", err)
+	}
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

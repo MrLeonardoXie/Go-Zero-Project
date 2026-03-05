@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+#  - job_name: 'prometheus'
+#    static_configs:
+#      - targets: ['localhost:9090']
+#
+#  - job_name: 'file_ds'
+#    file_sd_configs:
+#      - files:
+#          - /etc/prometheus/targets.json
+
+#使用consul,让prometheus自己去Consul监听服务,就不需要维护targets.json手动指定了
+  - job_name: "leonardo"
+    metrics_path: /metrics
+    scheme: http
+    consul_sd_configs:
+      - server: 127.0.0.1:8500
+        services: []
+    relabel_configs:
+      - regex: __meta_consul_service_metadata_(.+)
+        action: labelmap

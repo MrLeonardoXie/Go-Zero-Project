@@ -227,6 +227,7 @@ func articlesKey(uid int64, sortType int32) string {
 	return fmt.Sprintf(prefixArticles, uid, sortType)
 }
 
+//在Redis中找ps数量的缓存
 func (l *ArticlesLogic) cacheArticles(ctx context.Context, uid, cursor, ps int64, sortType int32) ([]int64, error) {
 	key := articlesKey(uid, sortType)
 	b, err := l.svcCtx.BizRedis.ExistsCtx(ctx, key)

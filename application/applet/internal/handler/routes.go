@@ -48,6 +48,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/is-thumbup",
 				Handler: IsThumbupHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/follow",
+				Handler: FollowHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/unfollow",
+				Handler: UnFollowHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/follow-list",
+				Handler: FollowListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/fans-list",
+				Handler: FansListHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithSignature(serverCtx.Config.Signature),

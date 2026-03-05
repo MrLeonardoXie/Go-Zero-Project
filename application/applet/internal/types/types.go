@@ -64,3 +64,58 @@ type IsThumbupResponse struct {
 	LikeType    int32 `json:"like_type"`
 	ThumbupTime int64 `json:"thumbup_time"`
 }
+
+type FollowRequest struct {
+	FollowedUserId int64 `json:"followed_user_id"`
+}
+
+type FollowResponse struct {
+}
+
+type UnFollowRequest struct {
+	FollowedUserId int64 `json:"followed_user_id"`
+}
+
+type UnFollowResponse struct {
+}
+
+type FollowListRequest struct {
+	Cursor   int64 `json:"cursor,optional"`
+	PageSize int64 `json:"page_size,optional"`
+	Id       int64 `json:"id,optional"`
+}
+
+type FollowItem struct {
+	Id             int64 `json:"id"`
+	FollowedUserId int64 `json:"followed_user_id"`
+	FansCount      int64 `json:"fans_count"`
+	CreateTime     int64 `json:"create_time"`
+}
+
+type FollowListResponse struct {
+	Items  []FollowItem `json:"items"`
+	Cursor int64        `json:"cursor"`
+	IsEnd  bool         `json:"is_end"`
+	Id     int64        `json:"id"`
+}
+
+type FansListRequest struct {
+	Cursor   int64 `json:"cursor,optional"`
+	PageSize int64 `json:"page_size,optional"`
+	Id       int64 `json:"id,optional"`
+}
+
+type FansItem struct {
+	UserId      int64 `json:"user_id"`
+	FansUserId  int64 `json:"fans_user_id"`
+	FollowCount int64 `json:"follow_count"`
+	FansCount   int64 `json:"fans_count"`
+	CreateTime  int64 `json:"create_time"`
+}
+
+type FansListResponse struct {
+	Items  []FansItem `json:"items"`
+	Cursor int64      `json:"cursor"`
+	IsEnd  bool       `json:"is_end"`
+	Id     int64      `json:"id"`
+}

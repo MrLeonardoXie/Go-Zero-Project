@@ -1,0 +1,77 @@
+services:
+  kafka1:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.12
+    container_name: kafka1
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --check=false
+      - --node-id=1
+      - --rpc-addr=kafka1:33145
+      - --advertise-rpc-addr=kafka1:33145
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      - --advertise-kafka-addr=PLAINTEXT://kafka1:9092,OUTSIDE://127.0.0.1:9092
+    ports:
+      - "9092:19092"
+    volumes:
+      - kafka1_data:/var/lib/redpanda/data
+
+  kafka2:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.12
+    container_name: kafka2
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --check=false
+      - --node-id=2
+      - --rpc-addr=kafka2:33145
+      - --advertise-rpc-addr=kafka2:33145
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      - --advertise-kafka-addr=PLAINTEXT://kafka2:9092,OUTSIDE://127.0.0.1:9093
+      - --seeds=kafka1:33145
+    ports:
+      - "9093:19092"
+    depends_on:
+      - kafka1
+    volumes:
+      - kafka2_data:/var/lib/redpanda/data
+
+  kafka3:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.12
+    container_name: kafka3
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --check=false
+      - --node-id=3
+      - --rpc-addr=kafka3:33145
+      - --advertise-rpc-addr=kafka3:33145
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      - --advertise-kafka-addr=PLAINTEXT://kafka3:9092,OUTSIDE://127.0.0.1:9094
+      - --seeds=kafka1:33145
+    ports:
+      - "9094:19092"
+    depends_on:
+      - kafka1
+    volumes:
+      - kafka3_data:/var/lib/redpanda/data
+
+volumes:
+  kafka1_data:
+  kafka2_data:
+  kafka3_data:

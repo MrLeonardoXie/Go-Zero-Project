@@ -71,7 +71,7 @@ func (l *PublishLogic) Publish(in *pb.PublishRequest) (*pb.PublishResponse, erro
 	b, _ := l.svcCtx.BizRedis.ExistsCtx(l.ctx, publishTimeKey)
 	//如果Redis中没有该缓存，那么就不添加该数据到Redis
 	if b {
-		// 执行ZaddCtx(l.ctx, publishTimeKey, 1740218400, "999")
+		// 执行ZaddCtx(l.ctx, publishTimeKey, 1740218400, "999")，或更新这条数据
 		_, err = l.svcCtx.BizRedis.ZaddCtx(l.ctx, publishTimeKey, time.Now().Unix(), articleIdStr)
 		if err != nil {
 			logx.Errorf("ZaddCtx req: %v error: %v", in, err)

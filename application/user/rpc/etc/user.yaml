@@ -4,7 +4,7 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: user.rpc
-DataSource: root:root1234@tcp(127.0.0.1:3306)/leonardo_user?parseTime=true
+DataSource: root:root1234@tcp(127.0.0.1:13306)/leonardo_user?parseTime=true
 CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:

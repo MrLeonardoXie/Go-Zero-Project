@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"strconv"
 	"strings"
 
 	"leonardo/application/like/mq/internal/model"
@@ -22,6 +24,11 @@ var (
 	ErrInvalidObjId    = errors.New("invalid objId")
 	ErrInvalidUserId   = errors.New("invalid userId")
 	ErrInvalidLikeType = errors.New("invalid likeType")
+)
+
+const (
+	stateCacheBaseTTL = 600
+	stateCacheJitter  = 30
 )
 
 type ThumbupLogic struct {
@@ -51,9 +58,10 @@ func (l *ThumbupLogic) Consume(key, val string) error {
 		return nil
 	}
 
-	//2.使用事务+幂等，实现like_record和like_count的写入
-	return l.svcCtx.Conn.TransactCtx(l.ctx, func(ctx context.Context, session sqlx.Session) error {
-		txConn := sqlx.NewSqlConnFromSession(session)
+	/*2.使用事务+幂等，实现like_record和like_count的写入，事务必须绑定在同一个物理连接上*/
+	//TransactCtx(...)：从连接池借出一条连接并开启事务，生成 session
+	err := l.svcCtx.Conn.TransactCtx(l.ctx, func(ctx context.Context, session sqlx.Session) error {
+		txConn := sqlx.NewSqlConnFromSession(session) //把这个已有 session 包装成 SqlConn 供 model 使用
 		recordModel := model.NewLikeRecordModel(txConn, l.svcCtx.Config.CacheRedis)
 		countModel := model.NewLikeCountModel(txConn, l.svcCtx.Config.CacheRedis)
 
@@ -61,7 +69,7 @@ func (l *ThumbupLogic) Consume(key, val string) error {
 		- 没有旧记录 -> 新增 + 计数变更
 		- 有旧记录且 like_type 相同 -> 直接返回（幂等）
 		- 有旧记录但 like_type 变化 -> 按“旧-1、新+1”更新计数 */
-		record, err := l.svcCtx.LikeRecordModel.FindOneByBizIdObjIdUserId(ctx, msg.BizId, msg.ObjId, msg.UserId)
+		record, err := recordModel.FindOneByBizIdObjIdUserId(ctx, msg.BizId, msg.ObjId, msg.UserId)
 		switch {
 		case err == nil: //有旧记录
 			oldType := int32(record.LikeType)
@@ -111,6 +119,15 @@ func (l *ThumbupLogic) Consume(key, val string) error {
 			return err
 		}
 	})
+	if err != nil {
+		return err
+	}
+
+	if cacheErr := l.setStateCache(msg.BizId, msg.ObjId, msg.UserId, msg.LikeType); cacheErr != nil {
+		l.Logger.Errorf("[ThumbupConsume] setStateCache biz:%s obj:%d user:%d err:%v", msg.BizId, msg.ObjId, msg.UserId, cacheErr)
+	}
+
+	return nil
 }
 
 func (l *ThumbupLogic) validateMsg(msg *types.ThumbupMsg) error {
@@ -168,4 +185,13 @@ func Consumers(ctx context.Context, svcCtx *svc.ServiceContext) []service.Servic
 	return []service.Service{
 		kq.MustNewQueue(svcCtx.Config.KqConsumerConf, NewThumbupLogic(ctx, svcCtx)),
 	}
+}
+
+func thumbupStateKey(bizId string, objId, userId int64) string {
+	return fmt.Sprintf("biz#thumbup#state#%s#%d#%d", bizId, objId, userId)
+}
+
+func (l *ThumbupLogic) setStateCache(bizId string, objId, userId int64, likeType int32) error {
+	ttl := stateCacheBaseTTL + int(userId%stateCacheJitter)
+	return l.svcCtx.BizRedis.SetexCtx(context.Background(), thumbupStateKey(bizId, objId, userId), strconv.FormatInt(int64(likeType), 10), ttl)
 }

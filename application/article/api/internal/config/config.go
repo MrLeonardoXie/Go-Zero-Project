@@ -1,6 +1,8 @@
 package config
 
 import (
+	"leonardo/pkg/consul"
+
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -22,4 +24,5 @@ type Config struct {
 		ReadWriteTimeout int64 `json:",optional"`
 	}
 	//Consul
+	Consul consul.Conf
 }

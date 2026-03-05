@@ -15,7 +15,8 @@ type Config struct {
 		RefreshExpire int64
 		RefreshAfter  int64
 	}
-	UserRPC  zrpc.RpcClientConf
-	LikeRPC  zrpc.RpcClientConf
-	BizRedis redis.RedisConf
+	UserRPC   zrpc.RpcClientConf
+	LikeRPC   zrpc.RpcClientConf
+	FollowRPC zrpc.RpcClientConf
+	BizRedis  redis.RedisConf
 }

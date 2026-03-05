@@ -53,6 +53,51 @@ type (
 		LikeType    int32 `json:"like_type"`
 		ThumbupTime int64 `json:"thumbup_time"`
 	}
+	FollowRequest {
+		FollowedUserId int64 `json:"followed_user_id"`
+	}
+	FollowResponse {
+	}
+	UnFollowRequest {
+		FollowedUserId int64 `json:"followed_user_id"`
+	}
+	UnFollowResponse {
+	}
+	FollowListRequest {
+		Cursor   int64 `json:"cursor,optional"`
+		PageSize int64 `json:"page_size,optional"`
+		Id       int64 `json:"id,optional"`
+	}
+	FollowItem {
+		Id             int64 `json:"id"`
+		FollowedUserId int64 `json:"followed_user_id"`
+		FansCount      int64 `json:"fans_count"`
+		CreateTime     int64 `json:"create_time"`
+	}
+	FollowListResponse {
+		Items  []FollowItem `json:"items"`
+		Cursor int64        `json:"cursor"`
+		IsEnd  bool         `json:"is_end"`
+		Id     int64        `json:"id"`
+	}
+	FansListRequest {
+		Cursor   int64 `json:"cursor,optional"`
+		PageSize int64 `json:"page_size,optional"`
+		Id       int64 `json:"id,optional"`
+	}
+	FansItem {
+		UserId      int64 `json:"user_id"`
+		FansUserId  int64 `json:"fans_user_id"`
+		FollowCount int64 `json:"follow_count"`
+		FansCount   int64 `json:"fans_count"`
+		CreateTime  int64 `json:"create_time"`
+	}
+	FansListResponse {
+		Items  []FansItem `json:"items"`
+		Cursor int64      `json:"cursor"`
+		IsEnd  bool       `json:"is_end"`
+		Id     int64      `json:"id"`
+	}
 )
 
 @server (
@@ -79,4 +124,12 @@ service applet-api {
 	post /thumbup (ThumbupRequest) returns (ThumbupResponse)
 	@handler IsThumbupHandler
 	post /is-thumbup (IsThumbupRequest) returns (IsThumbupResponse)
+	@handler FollowHandler
+	post /follow (FollowRequest) returns (FollowResponse)
+	@handler UnFollowHandler
+	post /unfollow (UnFollowRequest) returns (UnFollowResponse)
+	@handler FollowListHandler
+	post /follow-list (FollowListRequest) returns (FollowListResponse)
+	@handler FansListHandler
+	post /fans-list (FansListRequest) returns (FansListResponse)
 }

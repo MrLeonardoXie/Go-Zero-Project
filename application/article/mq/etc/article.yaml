@@ -1,8 +1,8 @@
 Name: mq
-KqConsumerConf:
+KqConsumerConf: #配置article-mq的参数，不是kafka组件的参数
   Name: article-kq-consumer
   Brokers:
-    - 127.0.1:9092 # Kafka服务的端口
+    - 127.0.0.1:9092 # Kafka服务的端口
   Group: group-like-count
   Topic: topic-like-count
   Offset: last
@@ -11,25 +11,25 @@ KqConsumerConf:
 ArticleKqConsumerConf:
   Name: article-cache-kq-consumer
   Brokers:
-    - 127.0.1:9092
+    - 127.0.0.1:9092
   Group: group-article
   Topic: topic-article
   Offset: last
   Consumers: 1
   Processors: 1
-Datasource: root:root1234@tcp(127.0.0.1:3306)/leonardo_article?parseTime=true
+Datasource: root:root1234@tcp(127.0.0.1:13306)/leonardo_article?parseTime=true
 BizRedis:
   Host: 127.0.0.1:6379
   Pass:
   Type: node
 Es:
   Addresses:
-    - http://localhost:9200/
+    - https://127.0.0.1:9200
   Username: elastic
   Password: LeonardoES@2026!
 Prometheus:
   Host: 0.0.0.0
-  Port: 9101
+  Port: 9104
   Path: /metrics
 Telemetry:
   Endpoint: http://127.0.0.1:14268/api/traces

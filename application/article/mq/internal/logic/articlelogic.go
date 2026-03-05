@@ -62,14 +62,14 @@ func (l *ArticleLogic) articleOperate(msg *types.CanalArticleMsg) error {
 		publishTimeKey := articlesKey(d.AuthorId, 0)
 		likeNumKey := articlesKey(d.AuthorId, 1)
 
-		//更新Redis，实现“最终一致性”
+		//1.更新Redis，实现“最终一致性”
 		switch status {
 		case types.ArticleStatusVisible: //文章状态为可见
 			b, _ := l.svcCtx.BizRedis.ExistsCtx(l.ctx, publishTimeKey) //判断该缓存是否存在，判断的时候使用了熔断操作
 			if b {
-				/* ZddCtx操作逻辑
-				- 如果 d.ID 这个 member 不存在：新增到有序集合
-				- 如果已存在：更新该 member 的 score（这里是 t.Unix()）
+				/* ZddCtx操作逻辑：操作ZSET列表
+				如果 d.ID 这个 member 不存在：新增到有序集合
+				如果已存在：更新该 member 的 score（这里是 t.Unix()）
 				*/
 				_, err = l.svcCtx.BizRedis.ZaddCtx(l.ctx, publishTimeKey, t.Unix(), d.ID)
 				if err != nil {
@@ -103,7 +103,7 @@ func (l *ArticleLogic) articleOperate(msg *types.CanalArticleMsg) error {
 			return err
 		}
 
-		//聚合User数据以及Article数据，写入ES
+		//聚合User数据以及Article数据，构建esData
 		esData = append(esData, &types.ArticleEsMsg{ //esData是一个slice
 			ArticleId:   articleId,
 			AuthorId:    authorId,
@@ -115,6 +115,7 @@ func (l *ArticleLogic) articleOperate(msg *types.CanalArticleMsg) error {
 			LikeNum:     likNum,
 		})
 	}
+	//2.写入ES数据库
 	err := l.BatchUpSertToEs(l.ctx, esData)
 	if err != nil {
 		l.Logger.Errorf("BatchUpSertToEs data: %v error: %v", esData, err)
@@ -138,7 +139,7 @@ func (l *ArticleLogic) BatchUpSertToEs(ctx context.Context, data []*types.Articl
 	}
 
 	for _, d := range data {
-		v, err := json.Marshal(d)
+		v, err := json.Marshal(d) //eg:{article_id:10003,author_id:2,author_name:leo,title:Kafka实战,content:Canal + Kafka + ES,description:链路说明,status:2,like_num:9}
 		if err != nil {
 			return err
 		}
@@ -158,7 +159,7 @@ func (l *ArticleLogic) BatchUpSertToEs(ctx context.Context, data []*types.Articl
 		}
 	}
 
-	return bi.Close(ctx)
+	return bi.Close(ctx) //调用：close(bi.queue)，使用close就会把缓冲队列里的 item flush 出去，即发 HTTP bulk 请求到 ES
 }
 
 func articlesKey(uid string, sortType int32) string {

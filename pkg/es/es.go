@@ -1,6 +1,7 @@
 package es
 
 import (
+	"crypto/tls"
 	"net"
 	"net/http"
 	"strconv"
@@ -34,14 +35,14 @@ type (
 
 	// esTransport is a transport for elasticsearch client
 	esTransport struct {
-		baseTransport *http.Transport
+		baseTransport *http.Transport //当前卡在 TLS 证书校验（ES8 自签证书）阶段
 	}
 )
 
 /*
-	用 go-zero 的 trace/metric 做埋点与上报
-	用 ES 客户端底层的 http.Transport 真正发请求
-	通过自定义 RoundTrip 把两者串起来（请求前后打点，最后调用 baseTransport.RoundTrip）
+用 go-zero 的 trace/metric 做埋点与上报
+用 ES 客户端底层的 http.Transport 真正发请求
+通过自定义 RoundTrip 把两者串起来（请求前后打点，最后调用 baseTransport.RoundTrip）
 */
 func (t *esTransport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 	var (
@@ -95,6 +96,9 @@ func NewEs(conf *Config) (*Es, error) {
 			KeepAlive: time.Hour,       // 保持活动连接的时间
 		}).DialContext,
 		TLSHandshakeTimeout: 10 * time.Second, // TLS 握手超时时间
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true, // only for local testing
+		},
 	}
 
 	// 自定义连接池函数

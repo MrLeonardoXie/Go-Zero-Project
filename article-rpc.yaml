@@ -6,9 +6,9 @@ metadata:
   labels:
     app: article-rpc
 spec:
-  replicas: 3
-  revisionHistoryLimit: 5
-  selector:
+  replicas: 3 # 有
+  revisionHistoryLimit: 5 #门店排班的最近 5 次换pod记录，方便回滚
+  selector: # k8s服务依据matchLabels选择对应的pod（里面有rpc实例）
     matchLabels:
       app: article-rpc
   template:
@@ -16,31 +16,31 @@ spec:
       labels:
         app: article-rpc
     spec:
-      containers:
-      - name: article-rpc
-        image: article-rpc:v1.0.0
+      containers: # Pod 内的容器列表。这里你只配了 1 个主容器（article-rpc）。
+      - name: article-rpc # 容器名，Pod 内唯一标识，日志/排障时会用到。
+        image: article-rpc:v1.0.0 #当前版本
         ports:
-        - containerPort: 9090
+        - containerPort: 9090 # 监听9090，等待客户端的请求, 然后在9090建立连接，处理请求，再将响应从这个连接发回给客户端
         readinessProbe:
+          tcpSocket: #就绪检查方式：用 TCP 连端口（不检查业务语义，只检查端口通不通）
+            port: 9090 #就绪探针检查 9090
+          initialDelaySeconds: 5 #容器启动后等 5 秒再开始第一次就绪检查。
+          periodSeconds: 10 #每 10 秒检查一次就绪状态。
+        livenessProbe: #存活探针：判断“容器是不是死锁/假活着”，连续失败会触发重启容器。
           tcpSocket:
-            port: 9090
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 9090
-          initialDelaySeconds: 15
-          periodSeconds: 20
-        resources:
+            port: 9090 #存活探针检查 9090
+          initialDelaySeconds: 15 #启动后等 15 秒再开始存活检查（比 readiness 更晚，避免误杀冷启动）。
+          periodSeconds: 20 #每 20 秒检查一次存活。
+        resources: #资源配额，给调度器和 cgroup 用。
           requests:
-            cpu: 200m
-            memory: 256Mi
+            cpu: 200m #申请 0.2 核 CPU。
+            memory: 256Mi #申请 256Mi 内存
           limits:
-            cpu: 200m
-            memory: 256Mi
-        volumeMounts:
-        - name: timezone
-          mountPath: /etc/localtime
+            cpu: 200m # CPU上限
+            memory: 256Mi # 内存上限 256Mi；超出可能被 OOMKill。
+        volumeMounts: # 把卷挂到容器文件系统中。
+        - name: timezone #挂载名为 timezone 的卷（要在同级 volumes 里定义）。
+          mountPath: /etc/localtime #挂到容器的时区文件路径，常用于让容器时区与宿主机一致。
       volumes:
         - name: timezone
           hostPath:
