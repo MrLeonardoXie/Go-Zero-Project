@@ -74,6 +74,7 @@ func (l *ArticleLogic) articleOperate(msg *types.CanalArticleMsg) error {
 				_, err = l.svcCtx.BizRedis.ZaddCtx(l.ctx, publishTimeKey, t.Unix(), d.ID)
 				if err != nil {
 					l.Logger.Errorf("ZaddCtx key: %s req: %v error: %v", publishTimeKey, d, err)
+					return err //更新失败，Kafka中的offset不更新，该消费数据继续重试
 				}
 			}
 			b, _ = l.svcCtx.BizRedis.ExistsCtx(l.ctx, likeNumKey)

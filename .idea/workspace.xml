@@ -6,30 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0f893310-55ce-400e-84db-1b22297247ff" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/applet.api" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/applet.api" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/etc/applet-api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/etc/applet-api.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/internal/handler/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/handler/routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/internal/svc/servicecontext.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/svc/servicecontext.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/applet/internal/types/types.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/applet/internal/types/types.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/article.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/etc/article-api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/etc/article-api.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/api/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/api/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/mq/etc/article.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/etc/article.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/article/mq/internal/logic/articlelogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/mq/internal/logic/articlelogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/etc/article.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/etc/article.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/logic/articleslogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/logic/articleslogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/article/rpc/internal/logic/publishlogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/article/rpc/internal/logic/publishlogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/follow/rpc/etc/follow.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/follow/rpc/etc/follow.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/mq/etc/like.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/mq/etc/like.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/mq/internal/logic/thumbuplogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/mq/internal/logic/thumbuplogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/mq/internal/svc/servicecontext.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/mq/internal/svc/servicecontext.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/rpc/etc/like.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/rpc/etc/like.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/rpc/internal/logic/thumbuplogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/rpc/internal/logic/thumbuplogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/like/rpc/internal/svc/servicecontext.go" beforeDir="false" afterPath="$PROJECT_DIR$/application/like/rpc/internal/svc/servicecontext.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/user/rpc/etc/user.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application/user/rpc/etc/user.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article-rpc.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/article-rpc.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/es/es.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/es/es.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
