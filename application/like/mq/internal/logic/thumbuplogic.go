@@ -91,7 +91,8 @@ func (l *ThumbupLogic) Consume(key, val string) error {
 				UserId:   msg.UserId,
 				LikeType: int64(msg.LikeType),
 			}); err != nil {
-				if deltalike.IsDuplicateEntry(err) { //并发时，两条数据同时插入
+				/* 优化：前面已经使用Redis Lua去抵挡重复消费了，因此这里不需要这样做；除非是Kafka出现了重复消费 */
+				if deltalike.IsDuplicateEntry(err) { //预防Kafka重复消费
 					current, getErr := recordModel.FindOneByBizIdObjIdUserId(ctx, msg.BizId, msg.ObjId, msg.UserId) //回查
 					if getErr != nil {
 						return getErr
@@ -109,10 +110,9 @@ func (l *ThumbupLogic) Consume(key, val string) error {
 					deltaLike, deltaDislike := deltalike.CalcSwitchDelta(oldType, msg.LikeType)
 					return l.applyCountDelta(ctx, countModel, &msg, deltaLike, deltaDislike)
 				}
-
 				return err
 			}
-
+			//更新like_count
 			deltaLike, deltaDislike := deltalike.CalcInsertDelta(msg.LikeType)
 			return l.applyCountDelta(ctx, countModel, &msg, deltaLike, deltaDislike)
 		default:
@@ -123,9 +123,10 @@ func (l *ThumbupLogic) Consume(key, val string) error {
 		return err
 	}
 
-	if cacheErr := l.setStateCache(msg.BizId, msg.ObjId, msg.UserId, msg.LikeType); cacheErr != nil {
-		l.Logger.Errorf("[ThumbupConsume] setStateCache biz:%s obj:%d user:%d err:%v", msg.BizId, msg.ObjId, msg.UserId, cacheErr)
-	}
+	////设置缓存：MySQL写入成功后，主动设置Redis缓存：biz#thumbup#state#{bizId}#{objId}#{userId}	1 (点赞) / 2 (点踩)
+	//if cacheErr := l.setStateCache(msg.BizId, msg.ObjId, msg.UserId, msg.LikeType); cacheErr != nil {
+	//	l.Logger.Errorf("[ThumbupConsume] setStateCache biz:%s obj:%d user:%d err:%v", msg.BizId, msg.ObjId, msg.UserId, cacheErr)
+	//}
 
 	return nil
 }
@@ -153,7 +154,7 @@ func (l *ThumbupLogic) applyCountDelta(ctx context.Context, countModel model.Lik
 		return nil
 	}
 
-	count, err := countModel.FindOneByBizIdObjId(ctx, msg.BizId, msg.ObjId)
+	count, err := countModel.FindOneByBizIdObjId(ctx, msg.BizId, msg.ObjId) //更新数据：会走cacheRedis
 	if err == model.ErrNotFound {
 		_, err = countModel.Insert(ctx, &model.LikeCount{
 			BizId:      msg.BizId,
@@ -161,9 +162,9 @@ func (l *ThumbupLogic) applyCountDelta(ctx context.Context, countModel model.Lik
 			LikeNum:    deltalike.MaxInt64(deltaLike, 0),
 			DislikeNum: deltalike.MaxInt64(deltaDislike, 0),
 		})
-		//两个消费者1号和2号几乎同时插入同一条 like_record，其中一个会报duplicate,这时不是直接失败，而是走“回查 + 更新/忽略”逻辑
+		//两个消费者1号和2号几乎同时插入一条like_count，其中一个会报duplicate,这时不是直接失败，而是走“回查 + 更新/忽略”逻辑
 		if err != nil && deltalike.IsDuplicateEntry(err) {
-			//回查，2号触发duplicate的插入操作,找到1号插入的新数据，赋予count，在下面的逻辑更新数据
+			//防止计数丢失：回查，2号触发duplicate的插入操作,找到1号插入的新数据，赋予count，在下面的逻辑更新数据
 			count, err = countModel.FindOneByBizIdObjId(ctx, msg.BizId, msg.ObjId)
 			if err != nil {
 				return err
@@ -178,7 +179,8 @@ func (l *ThumbupLogic) applyCountDelta(ctx context.Context, countModel model.Lik
 	count.LikeNum = deltalike.MaxInt64(count.LikeNum+deltaLike, 0)
 	count.DislikeNum = deltalike.MaxInt64(count.DislikeNum+deltaDislike, 0)
 
-	return countModel.Update(ctx, count)
+	err = countModel.Update(ctx, count) //先更新数据库，然后删除cacheRedis的缓存
+
 }
 
 func Consumers(ctx context.Context, svcCtx *svc.ServiceContext) []service.Service {
@@ -191,6 +193,7 @@ func thumbupStateKey(bizId string, objId, userId int64) string {
 	return fmt.Sprintf("biz#thumbup#state#%s#%d#%d", bizId, objId, userId)
 }
 
+//给like_record记录在redis中
 func (l *ThumbupLogic) setStateCache(bizId string, objId, userId int64, likeType int32) error {
 	ttl := stateCacheBaseTTL + int(userId%stateCacheJitter)
 	return l.svcCtx.BizRedis.SetexCtx(context.Background(), thumbupStateKey(bizId, objId, userId), strconv.FormatInt(int64(likeType), 10), ttl)

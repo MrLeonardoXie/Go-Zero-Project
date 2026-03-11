@@ -13,8 +13,8 @@ import (
 	"leonardo/application/like/rpc/service"
 	"leonardo/pkg/deltalike"
 
-	"github.com/zeromicro/go-zero/core/metric"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/metric"
 	"go.opentelemetry.io/otel/attribute"
 	oteltrace "go.opentelemetry.io/otel/trace"
 )
@@ -102,19 +102,19 @@ func NewThumbupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ThumbupLo
 }
 
 func (l *ThumbupLogic) Thumbup(in *service.ThumbupRequest) (*service.ThumbupResponse, error) {
+	// 1) 查用户态记录（缓存前置 -> DB兜底）
 	idemKey := thumbupIdemKey(in.BizId, in.ObjId, in.UserId)
-	idemState, idemErr := l.reserveThumbupIdem(idemKey, in.LikeType)
+	idemState, idemErr := l.reserveThumbupIdem(idemKey, in.LikeType) //使用 Redis 的 Lua 预占幂等键（P:likeType / D:likeType）
 	if idemErr != nil {
 		l.Logger.Errorf("[Thumbup] reserveThumbupIdem key: %s error: %v", idemKey, idemErr)
 	} else if idemState == idemReserveDuplicate {
 		return l.queryCountResp(l.ctx, in)
 	}
 
-	// 1) 查用户态记录（缓存前置 -> DB兜底）
 	var (
 		likeDelta, dislikeDelta int64
-		oldLikeType            int32
-		stateFound             bool
+		oldLikeType             int32
+		stateFound              bool
 	)
 
 	cacheCtx, cacheSpan := traceStep(l.ctx, "record_state_cache", in)
@@ -126,6 +126,7 @@ func (l *ThumbupLogic) Thumbup(in *service.ThumbupRequest) (*service.ThumbupResp
 	}
 	cacheSpan.End()
 
+	//如果找到之前的key，那么就记录oldLikeType
 	if hit {
 		oldLikeType = cachedLikeType
 		stateFound = true
@@ -138,7 +139,7 @@ func (l *ThumbupLogic) Thumbup(in *service.ThumbupRequest) (*service.ThumbupResp
 			recordStepErr = nil
 		}
 		observeStep("record_lookup", time.Since(recordStart), recordStepErr)
-		if err != nil && err != model.ErrNotFound {
+		if err != nil && err != model.ErrNotFound { //如果查询记录失败，就打断key写入redis
 			recordSpan.RecordError(err)
 			recordSpan.End()
 			if idemState == idemReserveProcessing {
@@ -149,7 +150,7 @@ func (l *ThumbupLogic) Thumbup(in *service.ThumbupRequest) (*service.ThumbupResp
 		recordSpan.End()
 
 		if err == nil {
-			oldLikeType = int32(record.LikeType)
+			oldLikeType = int32(record.LikeType) //使用Mysql中的数据记录，记录oldLiketype
 			stateFound = true
 		}
 	}
@@ -213,12 +214,14 @@ func (l *ThumbupLogic) Thumbup(in *service.ThumbupRequest) (*service.ThumbupResp
 	//	newDislike = deltalike.MaxInt64(0, state.DislikeNum+dislikeDelta)
 	//}
 
+	//更新BizRedis中的该数据的处理状态：thumbup:idem:{bizId}:{objId}:{userId}	P:1或2 (Processing) / D:1或2 (Done)，1或2:分别代表点赞和点踩
 	if idemState == idemReserveProcessing {
 		_ = l.svcCtx.BizRedis.SetexCtx(context.Background(), idemKey, fmt.Sprintf("D:%d", in.LikeType), idemDoneTTL)
 	}
-	if setErr := l.setStateCache(context.Background(), in.BizId, in.ObjId, in.UserId, in.LikeType); setErr != nil {
-		l.Logger.Errorf("[Thumbup] setStateCache biz:%s obj:%d user:%d err:%v", in.BizId, in.ObjId, in.UserId, setErr)
-	}
+	//成功后记录数据状态：biz#thumbup#state#{bizId}#{objId}#{userId}	1 (点赞) / 2 (点踩)
+	//if setErr := l.setStateCache(context.Background(), in.BizId, in.ObjId, in.UserId, in.LikeType); setErr != nil {
+	//	l.Logger.Errorf("[Thumbup] setStateCache biz:%s obj:%d user:%d err:%v", in.BizId, in.ObjId, in.UserId, setErr)
+	//}
 
 	// 6) 返回“乐观后的计数”（回表基线 + delta）
 	return &service.ThumbupResponse{
@@ -294,7 +297,7 @@ func (l *ThumbupLogic) queryCountResp(ctx context.Context, in *service.ThumbupRe
 	//	return cached, nil
 	//}
 
-	count, err := l.svcCtx.LikeCountModel.FindOneByBizIdObjId(countCtx, in.BizId, in.ObjId)
+	count, err := l.svcCtx.LikeCountModel.FindOneByBizIdObjId(countCtx, in.BizId, in.ObjId) //优化：使用Redis记录like_count
 	if err != nil {
 		if err == model.ErrNotFound { //接口返回默认值，不是缓存穿透
 			return &service.ThumbupResponse{
